@@ -116,3 +116,32 @@ Citations:
 [10] Security best practices for Amazon S3 https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html
 [11] Amazon S3 - Cloud Object Storage - AWS https://aws.amazon.com/s3/
 
+
+
+
+
+
+
+Can you remove the [1], [2], etc
+
+Here is the same comparison table with all reference citation numbers removed for a cleaner view:
+
+| Category           | AWS S3                                          | Google Cloud Storage                         | Azure Blob Storage                                |
+|--------------------|-------------------------------------------------|----------------------------------------------|---------------------------------------------------|
+| **Best Practices** | Audit buckets, block public access, use MFA delete, enable versioning, lifecycle management, monitor Storage Lens, use SSE-KMS/SSE-S3, enforce least-privilege policies, cost-based transitions | Use IAM for access control, avoid public buckets, enable audit logs, automate lifecycle transitions, set retention policies, bucket lock, fit storage class to usage, monitor for misconfigurations | Use RBAC/SAS, enable encryption, versioning & soft delete, automate lifecycle transitions, monitor metrics, manage storage tiering, use Storage Explorer |
+| **Governance**     | Block public access, versioning, object lock, cross-region replication, data tagging | Object/bucket lock, audit logs, public access prevention, resource hierarchy | Immutability policies, soft delete/undelete, retention/lock, audit logging |
+| **IAM**            | Granular IAM, bucket/access policies, MFA delete, OIDC/SAML support | Fine-grained IAM policies, service accounts, predefined roles, policy analyzer | RBAC via Azure AD, SAS tokens, fine-grained policies |
+| **API Security**   | VPC endpoints, HTTPS-only, request signing, pre-signed URLs | VPC SC service perimeter, TLS enforced, signed URLs, CMEK/CSEK for data | Private endpoints, SAS tokens, network rules, encryption in transit, firewall/IP rules |
+| **Resiliency**     | 11 nines durability, multi-region replication, backup/restore, CloudTrail monitoring | Multi-region replication, key rotation, continuous monitoring, strong consistency | Geo-redundancy, failover, point-in-time restore, versioning, Security Center monitoring |
+
+This keeps all key information accessible without clutter from citations.
+
+Citations:
+[1] Removing Reference Numbers : r/notebooklm https://www.reddit.com/r/notebooklm/comments/1k7j0x3/removing_reference_numbers/
+[2] Using structured references with Excel tables https://support.microsoft.com/en-us/office/using-structured-references-with-excel-tables-f5ed2452-2337-4f71-bed3-c8ae6d2b276e
+[3] How to remove table formatting in Excel https://www.ablebits.com/office-addins-blog/remove-table-formatting-excel/
+[4] Add, format, or delete captions in Word https://support.microsoft.com/en-us/office/add-format-or-delete-captions-in-word-82fa82a4-f0f3-438f-a422-34bb5cef9c81
+[5] How to Remove Table Formatting in Excel https://www.simplesheets.co/blog/remove-table-formatting-in-excel
+[6] Modify chart data in Numbers on Mac https://support.apple.com/en-in/guide/numbers/tan72719392/mac
+[7] Turn Off Excel Table Formulas and Use Cell References ... https://www.youtube.com/shorts/YJmDw4neNdI
+[8] How do I remove numbers from reference list https://community.endnote.com/t/how-do-i-remove-numbers-from-reference-list/724819
