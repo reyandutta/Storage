@@ -145,3 +145,34 @@ Citations:
 [6] Modify chart data in Numbers on Mac https://support.apple.com/en-in/guide/numbers/tan72719392/mac
 [7] Turn Off Excel Table Formulas and Use Cell References ... https://www.youtube.com/shorts/YJmDw4neNdI
 [8] How do I remove numbers from reference list https://community.endnote.com/t/how-do-i-remove-numbers-from-reference-list/724819
+
+
+
+
+In the abive table, can you add a row for network security?
+
+Here’s the updated comparison table for storage services across AWS S3, Google Cloud Storage, and Azure Blob Storage, with the addition of a row for **Network Security**:
+
+| Category           | AWS S3                                          | Google Cloud Storage                         | Azure Blob Storage                                |
+|--------------------|-------------------------------------------------|----------------------------------------------|---------------------------------------------------|
+| **Best Practices** | Audit buckets, block public access, use MFA delete, enable versioning, lifecycle management, monitor Storage Lens, use SSE-KMS/SSE-S3, enforce least-privilege policies, cost-based transitions | Use IAM for access control, avoid public buckets, enable audit logs, automate lifecycle transitions, set retention policies, bucket lock, fit storage class to usage, monitor for misconfigurations | Use RBAC/SAS, enable encryption, versioning & soft delete, automate lifecycle transitions, monitor metrics, manage storage tiering, use Storage Explorer |
+| **Governance**     | Block public access, versioning, object lock, cross-region replication, data tagging | Object/bucket lock, audit logs, public access prevention, resource hierarchy | Immutability policies, soft delete/undelete, retention/lock, audit logging |
+| **IAM**            | Granular IAM, bucket/access policies, MFA delete, OIDC/SAML support | Fine-grained IAM policies, service accounts, predefined roles, policy analyzer | RBAC via Azure AD, SAS tokens, fine-grained policies |
+| **API Security**   | VPC endpoints, HTTPS-only, request signing, pre-signed URLs | VPC SC service perimeter, TLS enforced, signed URLs, CMEK/CSEK for data | Private endpoints, SAS tokens, network rules, encryption in transit, firewall/IP rules |
+| **Resiliency**     | 11 nines durability, multi-region replication, backup/restore, CloudTrail monitoring | Multi-region replication, key rotation, continuous monitoring, strong consistency | Geo-redundancy, failover, point-in-time restore, versioning, Security Center monitoring |
+| **Network Security** | VPC endpoints, restrict source IP in bucket policies, HTTPS (TLS 1.2/1.3), support for Perfect Forward Secrecy, S3 Block Public Access, resource-based policies to restrict traffic from specific VPCs | VPC Service Controls, restrict access via private Google network, enforced TLS/SSL, support for perimeter policies, firewall, IP-based access controls | Private endpoints for isolation, Virtual Network integration, encryption in transit, firewall/IP restrictions, subnets, Azure perimeter controls |
+
+This new row covers network isolation, secure communication, and perimeter controls for cloud object storage in all three platforms.
+
+Citations:
+[1] Amazon S3 Security Features https://aws.amazon.com/s3/security/
+[2] Security best practices for Amazon S3 https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html
+[3] AWS S3 Security Best Practices: A Complete Guide for 2025 https://signiance.com/aws-s3-security-best-practices-a-complete-guide-for-2025/
+[4] Amazon S3 - Cloud Object Storage - AWS https://aws.amazon.com/s3/
+[5] Infrastructure security in Amazon S3 https://docs.aws.amazon.com/AmazonS3/latest/userguide/network-isolation.html
+[6] A Step-by-Step Guide to S3 Security Features & Setup https://www.apono.io/blog/a-step-by-step-guide-to-s3-security/
+[7] Amazon S3 Features - Cloud Object Storage - AWS https://aws.amazon.com/s3/features/
+[8] AWS S3 Security Best Practices https://www.wiz.io/academy/amazon-s3-security-best-practices
+[9] What is AWS S3 Bucket Security? https://pentera.io/glossary/aws-s3-bucket-security/
+[10] AWS Events - re:Inforce 2025 Updates https://www.youtube.com/watch?v=XCVr6cOFCDo
+
