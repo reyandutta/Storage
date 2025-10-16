@@ -159,3 +159,109 @@ Citations:
 [17] How to Use NotebookLM - Computing Services https://www.cmu.edu/computing/services/ai/meet-ai/tools/google-ai-tools/notebook-lm-how-to.html
 [18] Top 8 Network Segmentation Best Practices in 2025 https://www.upguard.com/blog/network-segmentation-best-practices
 [19] NotebookLM, OpenAI DevDay, and will AI prevent phishing ... https://www.ibm.com/think/podcasts/mixture-of-experts/notebooklm-openai-devday-phishing-attacks
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Can you find limitations across all the sections I told you to make report on above. Like find limitations, business limitations, etc
+
+Here is a summary of key limitations (technical, business, and compliance) across the major security and operations sections for NotebookLM Enterprise in Google Cloud:
+
+***
+
+### 1. Data Protection & Encryption
+
+- **CMEK Limitations:** You cannot change, rotate, or deregister customer-managed encryption keys (CMEK) once set for a notebook. Applying or removing encryption protection to a notebook after creation is not possible. Multi-region support is limited to US and EU; global regions not supported. CMEK quota increases and external key manager integrations require allowlisting and manual approval[1].
+- **CMEK with HSM/EKM:** High availability for key access is required. Persistent unreachability or service outages (billing, quota) can automatically disable CMEK-configured notebooks, impacting access and search freshness[1].
+
+***
+
+### 2. Audit Logging & Monitoring
+
+- **Log Content:** Audit logs do not capture or store actual AI-generated notebook content—for privacy. Only metadata like access, permission changes, and sharing is retained[2].
+- **Log Deletion:** Enterprise admins may retain certain audit/compliance logs even after notebooks are deleted, which may not meet strict "right to be forgotten" interpretations in all regions[2].
+- **Real-time Limitations:** Analysis and monitoring of audit log data can lag, especially with large teams and high activity environments; near-instant incident isolation is not always possible[3].
+
+***
+
+### 3. Infrastructure & Network Security
+
+- **VPC-SC Boundaries:** While VPC Service Controls keep data project-bound, they restrict integrations—external APIs or services outside the VPC-SC perimeter are not supported, which may limit hybrid/cloud extension use cases[4][5].
+- **Geographic/Residency Scope:** Only US/EU multi-region support exists for strict residency requirements; data locality for other regions (e.g., APAC/Middle East) is not provided, limiting compliance for global organizations[4][6].
+
+***
+
+### 4. Access & Sharing
+
+- **Collaboration Restrictions:** Only users within the same Google Cloud project can access or collaborate on notebooks. No cross-organization or cross-project sharing, limiting flexible teamwork across departments and partners[4][7].
+- **No Public Sharing:** Notebooks cannot be shared publicly; all sharing must be project-bound. This restriction could hinder collaborative research beyond company or project silos[4].
+
+***
+
+### 5. Usage & Content
+
+- **Usage Quotas:** Each user is limited to 500 notebooks, 300 sources per notebook, 500 chat queries daily, and 20 audio summaries per day[7].
+- **File Type Support:** Despite wide file support, some formats (e.g., certain media, specialty scientific/vertical data types) are not yet supported or require manual workarounds[7].
+- **Real-Time Performance:** Notebooks with very large source sets or complex structure may see significantly slower AI Q&A, and server resource constraints can impact processing speed at peak times[2].
+
+***
+
+### 6. Business/Compliance Limitations
+
+- **No External Guest Access:** Can't bring in external collaborators, vendors, or regulated third parties; everyone must have an explicit role within the project[4][7].
+- **No Terraform Automation for CMEK:** CMEK setup cannot be managed through Terraform or full IaC pipelines; this hampers automated, large-scale enterprise rollouts[1].
+- **Limited Customization/Integration:** Few APIs/SDK hooks for deeper enterprise integration or complex custom workflows; dependence on Google’s roadmap/feature releases[8].
+
+***
+
+These limitations, while reflecting a strong security posture, may impact flexibility, global business operations, real-time responsiveness, and enterprise automation for some use cases. Organizations should carefully map these to their needs before broad deployment[1][2][4][7][8].
+
+Citations:
+[1] Customer-managed encryption keys | Google Agentspace https://cloud.google.com/agentspace/notebooklm-enterprise/docs/cmek
+[2] Google NotebookLM: Complete AI Research Assistant Guide https://kumarharshit.in/google-notebooklm-ai-assistant/
+[3] Gemini Enterprise audit logging https://cloud.google.com/gemini/enterprise/docs/audit-logging
+[4] What is NotebookLM Enterprise? | Gemini Enterprise https://cloud.google.com/gemini/enterprise/notebooklm-enterprise/docs/overview
+[5] NotebookLM for enterprise https://cloud.google.com/resources/notebooklm-enterprise
+[6] GDPR Compliance And Data Residency In NotebookLM ... https://notebooklm.in/gdpr-compliance-and-data-residency-in-notebooklm-enterprise/
+[7] NotebookLM Plus Vs. NotebookLM Enterprise https://notebooklm.in/notebooklm-plus-vs-notebooklm-enterprise/
+[8] Limitations of NotebookLM Every Developer Should Know https://www.byteplus.com/en/topic/559998
+[9] selected_image_6863238750539128375.jpg https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/39124392/117b1c63-7a81-470f-84ce-40b03ee560b9/selected_image_6863238750539128375.jpg
+[10] Advantages And Limitations Of NotebookLM Podcasts https://notebooklm.in/advantages-and-limitations-of-notebooklm-podcast/
+[11] Frequently asked questions - NotebookLM Help https://support.google.com/notebooklm/answer/16269187?hl=en
+[12] 5 ways to use NotebookLM Plus for your business https://blog.google/technology/google-labs/notebooklm-business-tips/
+[13] NotebookLM & NotebookLM Plus now core to Google ... https://www.revolgy.com/insights/blog/notebooklm-notebooklm-plus-now-core-to-google-workspace
+[14] How limiting is NotebookLM when accessed via Google ... https://www.reddit.com/r/notebooklm/comments/1l4c8hv/how_limiting_is_notebooklm_when_accessed_via/
+[15] NotebookLM Pricing 2025: Free Plan vs Paid Plan - Elite Cloud https://www.elite.cloud/post/notebooklm-pricing-2025-free-plan-vs-paid-plan-which-one-actually-saves-you-time/
+[16] Re: [SourcesEffects]: Unable to fetch projects - NotebookLM ... https://www.googlecloudcommunity.com/gc/AI-ML/SourcesEffects-Unable-to-fetch-projects-NotebookLM-Enterprise/m-p/899554
+[17] Generative AI in Google Workspace Privacy Hub https://support.google.com/a/answer/15706919?hl=en
+[18] Enterprise security controls for Gemini in Google Workspace https://workspace.google.com/blog/ai-and-machine-learning/enterprise-security-controls-google-workspace-gemini
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
