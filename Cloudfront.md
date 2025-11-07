@@ -78,3 +78,241 @@ Unrestricted geographic access: By default CloudFront serves globally. Risk: If 
 By addressing the above issues – enforcing HTTPS/TLS, restricting origin access, enabling logging/WAF, and following AWS identity best practices – you can greatly reduce CloudFront-related security risks.  Wherever possible, codify these guardrails using AWS Config, Service Control Policies, and automated checks so that distributions remain compliant over time.  Regular reviews and updates (e.g. upgrading to new TLS policies, refreshing WAF rules) will ensure the distribution stays secure against evolving threats.
 
 Sources: AWS documentation and AWS blog posts on CloudFront security.
+
+
+
+
+
+
+
+
+
+
+
+Excellent — thanks!
+Here’s a comprehensive internal security report on AWS CloudFront, covering all key areas: overview, setup, data protection, encryption, IAM, infrastructure, monitoring, best practices, and findings with concrete risks and guardrails.
+
+
+---
+
+AWS CloudFront Security Report
+
+1. Overview
+
+Amazon CloudFront is a global Content Delivery Network (CDN) service that securely delivers web content (HTML, CSS, JavaScript, images, APIs, or videos) with low latency.
+It integrates deeply with other AWS services (S3, API Gateway, WAF, Shield, ACM, etc.) and can distribute both static and dynamic content securely across AWS edge locations.
+
+Key Security Capabilities
+
+Integration with AWS WAF for web application protection.
+
+TLS/SSL encryption for data in transit.
+
+Signed URLs/Cookies for private content access control.
+
+Origin Access Control (OAC) to protect S3 origins.
+
+Logging and monitoring through CloudWatch, CloudTrail, and S3 access logs.
+
+
+
+---
+
+2. Default Setup and Security Considerations
+
+When you spin up a new CloudFront distribution, several defaults can create potential risks if not reviewed.
+
+Default Setting	Concern	Risk	Recommendation / Guardrail
+
+Default Viewer Protocol Policy = “HTTP and HTTPS”	Allows unencrypted HTTP access.	Sensitive data exposure; downgrade attacks.	Enforce HTTPS-only via “Redirect HTTP to HTTPS.”
+Origin Access = Public	S3 bucket/origin accessible directly.	Bypasses CloudFront security and logging.	Use Origin Access Control (OAC) or Origin Access Identity (OAI).
+Default TLS Policy = TLSv1	Outdated encryption.	Vulnerable to SSL attacks.	Use TLSv1.2_2021 or later.
+Logging = Disabled	Lack of visibility.	No audit trail for attacks or misuse.	Enable Standard or Real-Time Logs to S3 and CloudWatch.
+WAF/Shield = Not Configured	No protection from OWASP Top 10 threats.	Susceptible to XSS, SQLi, bot attacks.	Attach AWS WAF WebACL and enable AWS Shield Standard/Advanced.
+Default Cache Policy = Caching headers not restrictive	May cache sensitive data.	Exposure of PII/auth tokens in cache.	Use custom cache policy; disable caching for sensitive paths.
+
+
+
+---
+
+3. Data Protection and Encryption
+
+3.1 Encryption in Transit
+
+CloudFront supports HTTPS (TLS) for secure data transfer between:
+
+Viewer ↔ CloudFront Edge
+
+CloudFront ↔ Origin
+
+
+Default: TLSv1 enabled.
+Recommendation: Enforce TLSv1.2 or higher using the latest CloudFront TLS Security Policy.
+
+Viewer Certificate:
+
+Use ACM-issued custom SSL certificate for your domain.
+
+Avoid using the default *.cloudfront.net certificate in production.
+
+
+HTTP Headers:
+
+Add HSTS (Strict-Transport-Security) to enforce HTTPS.
+
+
+
+3.2 Encryption at Rest
+
+CloudFront itself does not store persistent data, but:
+
+Logs stored in S3 → enable S3 Server-Side Encryption (SSE-S3 or SSE-KMS).
+
+Lambda@Edge code and configurations are encrypted by AWS KMS by default.
+
+
+Use AWS KMS CMKs for encrypting any secrets, keys, or parameters in Lambda@Edge.
+
+
+
+---
+
+4. Infrastructure Security
+
+Edge Network: AWS operates a globally distributed edge infrastructure with built-in DDoS protection via AWS Shield Standard (default, free).
+
+Integration with AWS WAF:
+
+Deploy WAF rules (SQL injection, XSS, bot control, IP blocking).
+
+Regularly update rules and monitor rule effectiveness.
+
+
+Origin Protection:
+
+Restrict origin access to CloudFront IPs only.
+
+Use private S3 buckets with OAC to prevent direct access.
+
+For EC2 origins, configure Security Groups to only allow CloudFront edge IP ranges.
+
+
+
+
+---
+
+5. IAM (Identity and Access Management)
+
+5.1 IAM Roles and Policies
+
+Least Privilege Principle:
+Grant only necessary permissions to CloudFront service-linked roles.
+
+Avoid using root credentials or overly broad policies (e.g., *:*).
+
+Use IAM roles for automation (e.g., deployment pipelines, Terraform, CloudFormation).
+
+
+5.2 CloudFront Service Role
+
+When CloudFront interacts with S3 or Lambda@Edge, ensure:
+
+Role trust policies are limited to required AWS services.
+
+Rotate IAM access keys frequently (if used manually).
+
+
+
+5.3 Guardrail Example
+
+> Guardrail: Enforce IAM policy scans via AWS IAM Access Analyzer and block overly permissive roles for CloudFront using Service Control Policies (SCPs) in AWS Organizations.
+
+
+
+
+---
+
+6. Logging and Monitoring
+
+Component	Purpose	Recommendation
+
+Access Logs	Capture requests to CloudFront	Enable Standard Logs to an encrypted S3 bucket with restricted access.
+Real-Time Logs	Monitor request behavior in near real-time	Enable for high-sensitivity workloads.
+CloudWatch Metrics	Track cache hit rates, errors, latency	Set alarms for spikes in 4xx/5xx errors.
+CloudTrail	Audit API calls	Enable CloudTrail for CloudFront across all regions.
+AWS Config	Evaluate configuration drift	Create Config Rules (e.g., cloudfront-distribution-encryption-enabled).
+
+
+Guardrail:
+Use Security Hub to aggregate findings from Config, GuardDuty, and WAF logs for a unified dashboard.
+
+
+---
+
+7. Security Best Practices
+
+✅ Enforce HTTPS-only viewer access.
+✅ Use Origin Access Control (OAC) to lock S3 origins.
+✅ Restrict CloudFront access with signed URLs/cookies for private content.
+✅ Attach AWS WAF and enable Shield Advanced for enterprise-grade DDoS protection.
+✅ Use custom cache policies to prevent sensitive data caching.
+✅ Enable Field-Level Encryption for sensitive form data (e.g., credit card info).
+✅ Enable S3 log encryption and retention policy.
+✅ Review distributions regularly with AWS Trusted Advisor and Security Hub.
+
+
+---
+
+8. Findings, Risks, and Recommendations
+
+Finding	Concern	Risk	Recommendation / Guardrail
+
+Unrestricted HTTP access	Viewer traffic not encrypted	Data leakage, MITM attacks	Enforce HTTPS-only; add HSTS header.
+Public S3 origin	Direct access bypasses CloudFront	Exfiltration risk	Use Origin Access Control (OAC); deny public S3 access.
+Weak TLS version	TLSv1 or TLSv1.1 still enabled	Downgrade, weak cipher attacks	Set MinimumProtocolVersion = TLSv1.2_2021.
+No WAF attached	No layer 7 protection	OWASP Top 10 exposure	Attach WAF WebACL with managed rulesets.
+Logging disabled	No request traceability	Hard to investigate incidents	Enable access logs and centralize in S3 + CloudWatch.
+Caching sensitive data	Cache-control not set	PII exposure	Define cache policies and disable caching for sensitive paths.
+No monitoring alerting	CloudFront metrics ignored	Missed anomalies	Set CloudWatch alarms for 4xx/5xx error thresholds.
+Overly permissive IAM roles	Wildcard permissions	Privilege escalation	Enforce least privilege via IAM Access Analyzer and SCPs.
+
+
+
+---
+
+9. Proposed Guardrails Summary
+
+Category	Guardrail Type	Implementation
+
+Transport Security	Prevent non-HTTPS traffic	Config Rule + SCP to deny HTTP-only distributions
+Origin Protection	Enforce OAC usage	AWS Config rule: cloudfront-distribution-oac-enabled
+Encryption Policy	TLS >= 1.2	Managed Policy check in Config
+IAM Permissions	Least privilege enforcement	SCP restricting wildcard policies
+Logging and Auditing	Centralized logs	Mandatory CloudFront logging enabled via Config
+WAF and DDoS	Mandatory WebACL association	Config rule requiring WAF on all distributions
+
+
+
+---
+
+10. Summary
+
+CloudFront, when configured properly, provides enterprise-grade CDN performance with strong security controls. However, defaults may expose organizations to risk if left unreviewed.
+Key actions to secure your CloudFront setup:
+
+Enforce HTTPS-only, OAC, and WAF.
+
+Monitor with CloudTrail, Config, and Security Hub.
+
+Implement guardrails via SCPs and Config rules to ensure compliance.
+
+
+
+---
+
+Would you like me to:
+
+Format this report into a professional PDF-style version (with executive summary, diagrams, and guardrail matrix),
+or
+
+Keep it as a Markdown/Word-compatible document for internal documentation (e.g., Confluence or SharePoint)?
