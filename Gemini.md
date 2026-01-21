@@ -28,3 +28,29 @@ Citations:
 [8] gcloud iam roles | Google Cloud SDK https://cloud.google.com/sdk/gcloud/reference/iam/roles
 [9] IAM roles and permissions index - Google Cloud Documentation https://docs.cloud.google.com/iam/docs/roles-permissions
  
+
+
+
+
+
+
+
+
+
+6.2 Service Account Authentication (Avoid JSON Keys)
+
+**PROBLEM**: JSON service account keys are a primary breach vector—easily leaked in code repositories, CI/CD pipelines, or config files.
+
+**SOLUTION**: Use keyless authentication by impersonating service accounts:
+
+• **Workload Identity Federation (WIF)** – For code running *outside* GCP (AWS, GitHub Actions, on-prem):
+  - External identity (AWS IAM, GitHub OIDC) → GCP service account token
+  - No JSON keys stored anywhere
+
+• **Managed Service Identity** – For GCP services (Cloud Run, GCE, GKE):
+  - Attach service account to resource → Metadata server auto-generates tokens
+  - Zero configuration in your code
+
+**Logging, Monitoring, Observability**
+- Cloud Audit Logs track all service account API calls
+- Monitor for anomalous patterns indicating security incidents
