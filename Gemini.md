@@ -211,3 +211,35 @@ Citations:
 [19] Google VertexAI monitoring integration | New Relic Documentation https://docs.newrelic.com/docs/infrastructure/google-cloud-platform-integrations/gcp-integrations-list/google-vertexai-monitoring-integration/
 
 
+
+Based on the "Gemini Text-to-Speech Security Review" document, 15 points is an appropriate length to cover the most critical security and operational best practices.
+
+Here are the 15 best practices, organized by security pillar, for deploying Gemini Text-to-Speech securely on Google Cloud:
+
+### **Network and Infrastructure Isolation**
+
+1.  **Enforce VPC Service Controls (VPC-SC):** Implement a service perimeter around projects hosting the Gemini TTS workload and restrict the `aiplatform.googleapis.com` service to prevent unauthorized external access and data exfiltration (Mitigates Risk R-03).
+2.  **Deploy Private Service Connect (PSC):** Create a PSC endpoint within your VPC to ensure all API traffic travels privately over Google’s internal backbone, eliminating exposure to the public internet.
+3.  **Block Public IPs on Compute Instances:** Configure all accessing compute resources (GCE, GKE nodes) without public IP addresses, forcing them to use the secure PSC pathway.
+4.  **Restrict Base Service Usage (Shadow AI Prevention):** Apply the Organization Policy constraint `constraints/gcp.restrictServiceUsage` to deny access to `aiplatform.googleapis.com` in all projects except those explicitly authorized for AI workloads.
+
+### **Identity and Access Management (IAM)**
+
+5.  **Use Custom IAM Roles:** Define a **Custom IAM Role** scoped strictly to the atomic permission `aiplatform.endpoints.predict` to adhere to the principle of Least Privilege (Mitigates Risk R-04).
+6.  **Enforce Workload Identity Federation (WIF):** Avoid downloading long-lived JSON Service Account keys. Use WIF for external workloads or Managed Service Identity for internal Google Cloud resources to secure authentication.
+7.  **Disable Service Account Key Creation:** Use the Organization Policy `constraints/iam.disableServiceAccountKeyCreation` to block the generation of static, long-lived Service Account keys across the organization.
+
+### **Data Sovereignty and Encryption**
+
+8.  **Mandate Regional Endpoints:** Hardcode the SDK to use specific **Regional Endpoints** (e.g., `us-central1-aiplatform.googleapis.com`) to guarantee data processing location (Mitigates Risk R-01).
+9.  **Enforce Regional Constraints:** Apply the Organization Policy `constraints/gcp.resourceLocations` to technically enforce that no AI resources (including prediction calls) occur outside the allowed regions.
+10. **Require CMEK for Stateful Resources:** Use the Organization Policy `constraints/gcp.restrictNonCmekServices` to ensure any Vertex AI resources (like cached data or models) are encrypted with a Customer-Managed Encryption Key (CMEK).
+
+### **Content Safety and Observability**
+
+11. **Exclude Payload from Data Access Logs:** Enable Cloud Data Access logs for `aiplatform.googleapis.com` for auditing, but **explicitly exclude the request/response payload** to prevent writing sensitive text prompts (PII) in cleartext to Cloud Logging (Mitigates Risk R-02).
+12. **Set Strictest Safety Filters:** Configure the `safetySettings` parameter in API calls to the strictest level (e.g., `BLOCK_LOW_AND_ABOVE`) for applications accepting untrusted user input to mitigate harmful content generation.
+13. **Verify SynthID Watermarking:** Confirm that **SynthID** digital watermarking is active by default to embed an imperceptible signature into generated audio, enabling forensic provenance against deepfakes (Mitigates Risk R-05).
+14. **Whitelist Allowed Models:** Use the Organization Policy `constraints/vertexai.allowedModels` to restrict model usage to only the approved Gemini TTS models (e.g., `gemini-2.5-pro-tts`).
+15. **Monitor Token Usage Spikes:** Track the text input token count in Cloud Monitoring to detect sudden, unexplained spikes that could indicate a compromised credential being used for a "Wallet Denial of Service" attack.
+
