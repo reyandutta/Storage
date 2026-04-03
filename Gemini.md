@@ -2,7 +2,7 @@ What type of least provimage custom roles can be made? For example, one set of u
 
 GCP IAM best practices, as shown in your screenshot, strongly recommend custom roles over broad ones like `aiplatform.user` for Vertex AI to enforce least privilege [1][2]. Below are suggested custom role types tailored to common user personas, drawing from the permissions in your list and official guidance [3][4].
 
-## Suggested Custom Roles
+# Suggested Custom Roles
 
 | Role Name                  | Target Users                  | Key Permissions (Minimal Set) | Use Case |
 |----------------------------|-------------------------------|-------------------------------|----------|
