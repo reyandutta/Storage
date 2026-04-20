@@ -265,3 +265,52 @@ That matches your original draft better and sounds more like an architecture rev
 
 I can now rewrite all four findings in a polished, copy-paste-ready format exactly matching your screenshot style.
 
+
+
+
+
+Does point no 2 makes sense? Multilayered guardrail?
+
+Point 2 mostly **makes sense as a concept**, but the wording in the screenshot is a bit mixed and should be tightened before you use it in a client document. [1][2][3] The idea of **multi-layered guardrails** is valid, but the specific Step 3 wording about attaching a Bedrock Guardrail “to the Gateway’s Policy Engine” is not the cleanest or most defensible way to describe it. [1][4][2][5]
+
+## What makes sense
+
+A layered approach is reasonable because Bedrock Guardrails can be created centrally and then applied independently in application flow using the `ApplyGuardrail` API before or after model processing. [2][6][3] AWS also supports associating guardrails directly with Bedrock agents, and Guardrails include controls such as harmful content filters, sensitive information filtering, and contextual grounding checks. [7][3][8]
+
+So the overall architecture idea is sound:
+- Guard the **input** before processing. [2]
+- Guard the **output** before returning it. [2][6]
+- Optionally use authorization and policy controls around tool actions separately. [4][9][10]
+
+That is a valid “multi-layered” approach, but it combines two different control families: **content safety guardrails** and **tool/action authorization controls**. [4][2][3]
+
+## What is weak
+
+The phrase “attach the guardrail to the Gateway’s Policy Engine” is the part I would change. [1][4][5] Based on the sources reviewed, AgentCore Policy/Gateway is described as controlling and intercepting agent-tool actions, while Bedrock Guardrails are described as content-assessment safeguards applied to model inputs and outputs, including via `ApplyGuardrail`; those are related controls, but not the same mechanism. [4][2][3][5]
+
+Also, the wording “configure filters for ‘Contextual Grounding’ to check for hallucinations” is directionally okay, but technically contextual grounding is more specifically about checking whether output is grounded in a provided source and relevant to the query, not a universal hallucination detector for every scenario. [1][8][11][12]
+
+## Better wording
+
+I would rewrite Point 2 like this:
+
+### 2. Configuring Multi-Layered Guardrails
+
+To reduce the risk of prompt injection, harmful content, sensitive data exposure, and ungrounded responses, a layered guardrail approach can be considered. [2][3]
+
+- **Step 1:** Create an Amazon Bedrock Guardrail using the console or `CreateGuardrail` API, and configure relevant controls such as harmful content filters, sensitive information filters, denied topics, and contextual grounding where applicable. [2][3][8]
+- **Step 2:** Create and manage a version of the guardrail for controlled rollout and change management. [1]
+- **Step 3:** Apply the guardrail within the application flow using the `ApplyGuardrail` API on user input and model output as appropriate; for agent tool usage, use AgentCore Gateway or Policy controls separately to authorize and restrict tool actions. [2][6][4][9][10]
+
+That version is much safer because it does not blur **guardrails** with **policy enforcement**. [4][2][3]
+
+## Recommendation
+
+So, yes, the point is **feasible and usable**, but I would not keep the screenshot version exactly as written. [1][2][3] The main correction is to present Bedrock Guardrails and AgentCore Policy/Gateway as complementary layers rather than saying the guardrail is attached to the Gateway policy engine. [4][9][10][2]
+
+A concise client-safe sentence would be:
+
+“A multi-layered control model may be considered, where Amazon Bedrock Guardrails are applied to user input and model output, while AgentCore Gateway or Policy controls are used to restrict tool access and high-impact actions.” [4][9][10][2]
+
+I can rewrite the whole “Configuring Multi-Layered Guardrails” subsection into the same polished style as the rest of your report.
+
