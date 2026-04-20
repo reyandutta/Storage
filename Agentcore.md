@@ -314,3 +314,48 @@ A concise client-safe sentence would be:
 
 I can rewrite the whole “Configuring Multi-Layered Guardrails” subsection into the same polished style as the rest of your report.
 
+
+
+
+What about 3rd one?
+
+The 3rd one is **largely valid**, and much stronger than some of the earlier points, but it should be phrased a little more carefully so it does not sound like every step is universally mandatory for every AgentCore deployment. [1][2][3][4]
+
+## What is correct
+
+AWS does document AgentCore Observability and says AgentCore provides built-in metrics in CloudWatch, while fuller observability in CloudWatch and custom runtime metrics require code instrumentation using the AWS Distro for OpenTelemetry (ADOT) SDK. [2][5] AWS also documents enabling **Transaction Search** in CloudWatch and using the GenAI Observability views in CloudWatch to inspect agents, sessions, traces, latency, usage, and errors. [2][3][4][6]
+
+The general flow shown in your screenshot is therefore credible:
+- Enable Transaction Search. [2][4][7]
+- Add ADOT/OpenTelemetry instrumentation where needed. [2][8][5]
+- Use CloudWatch GenAI Observability views to inspect traces and metrics. [3][4][6]
+
+## What needs correction
+
+Step 2 and Step 3 are a bit too prescriptive as written. [1][2][4] AWS says ADOT instrumentation is needed to view the full range of observability data or emit custom runtime metrics, but some AgentCore metrics are already available by default in CloudWatch, so the wording should not imply that nothing works unless ADOT is added. [2][5]
+
+Also, “run your agent code using the `opentelemetry-instrument` command” is a valid pattern for some environments, but it should be described as **one approach** rather than the only required method. [9][10] Depending on the framework and deployment model, instrumentation may come from the runtime, SDK integration, environment variables, or other OpenTelemetry-compatible setup. [4][11][5]
+
+## Better version
+
+I would rewrite it like this:
+
+### 3. Enabling Full-Stack Observability
+
+To improve visibility into agent execution, tool usage, errors, and model interactions, AgentCore observability capabilities in Amazon CloudWatch can be enabled and extended where appropriate. [2][3][6]
+
+- **Step 1:** Enable CloudWatch Transaction Search so traces can be indexed and viewed within the CloudWatch observability experience. [2][4][7]
+- **Step 2:** Where deeper tracing or custom runtime metrics are required, instrument the application using OpenTelemetry with the AWS Distro for OpenTelemetry (ADOT) SDK or an equivalent supported integration. [2][8][5]
+- **Step 3:** Where applicable, configure the runtime or execution environment to emit OpenTelemetry traces, including automatic instrumentation approaches supported by the framework in use. [9][11][10]
+- **Step 4:** Use the CloudWatch GenAI Observability views to review traces, sessions, latency, usage, and error patterns for AgentCore workloads. [3][4][6]
+
+## My verdict
+
+So yes, **point 3 makes sense and is feasible**, and you can use it. [1][2][3][4] I would just soften the wording so it reads as a practical observability setup pattern rather than a rigid one-size-fits-all implementation sequence. [2][6][5]
+
+A shorter client-safe version would be:
+
+“AgentCore observability can be strengthened by enabling CloudWatch Transaction Search, instrumenting the application with OpenTelemetry where deeper tracing is required, and using CloudWatch GenAI Observability views to monitor traces, sessions, latency, and tool activity.” [2][3][4][6]
+
+The only part I would **not** leave unchanged is the implication that `opentelemetry-instrument` is always the required command. [1][9][10] It is better to call it an example implementation method rather than the control itself. [9][11]
+
