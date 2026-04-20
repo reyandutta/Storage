@@ -168,6 +168,77 @@ Below is the same content rewritten in the format you want.
 - **Recommendation:** It is recommended to assess whether sandbox mode is appropriate for workloads handling confidential or regulated data and whether stronger isolation is needed for those use cases. [10]
 - **Proposed Guardrail:** Use VPC mode for higher-sensitivity workloads and apply DNS egress monitoring or filtering controls, such as Route 53 Resolver DNS Firewall where appropriate. [10]
 
+
+
+
+3 yu 282928363627272829837373
+
+
+
+Why did you put risk description recommendation severity? Uh, the earlier the initial draft was concern risk recommendation and proposed guardrail, right?
+
+Yes — that’s a fair point. I changed the structure because I was converting it into a more formal audit style, but if your original document format is **Concern / Risk / Recommendation / Proposed Guardrail**, then we should absolutely keep that format for consistency. [1]
+
+## Why I changed it
+
+I switched to “Description / Risk / Recommendation / Severity” because that format is common in assessment reports and makes the logic explicit. [2][3] But for your document, consistency matters more than forcing a new reporting template, especially since your draft already uses **Concern / Risk / Recommendation / Proposed Guardrail**. [1]
+
+## Better fit
+
+Your original structure actually works well for AgentCore findings:
+- **Concern** explains the control weakness or architectural issue.
+- **Risk** explains what could happen if that weakness is exploited.
+- **Recommendation** gives the client-facing action.
+- **Proposed Guardrail** gives the practical control or implementation pattern. [3][4][5][6]
+
+That format is especially useful here because several AgentCore risks depend on configuration choices like gateway authorization, memory scoping, and runtime isolation, so the “Proposed Guardrail” field helps translate the issue into an actionable architecture control. [3][7][8][4][5]
+
+## Revised in your format
+
+Below is the same content rewritten in the format you want.
+
+### 1. Inadequate authorization over tool access
+
+- **Concern:** AgentCore Gateway supports inbound and outbound authorization, but the review should consider whether access to connected tools, targets, and actions is limited to approved principals and approved use cases. [4][5][6]
+- **Risk:** If authorization is too broad or inconsistently applied, an agent or caller may be able to invoke unintended tools or perform actions beyond the intended business scope. [9][4]
+- **Recommendation:** It is recommended to review whether sensitive tool actions are protected through fine-grained authorization and whether access is restricted to approved identities, targets, and operations. [9][4][5]
+- **Proposed Guardrail:** Use a deny-by-default model for gateway-exposed actions, document an approved tool inventory, and apply explicit authorization controls for both inbound caller access and outbound target access. [4][5][6]
+
+### 2. DNS-based data exfiltration in sandbox mode
+
+- **Concern:** Public research reported that AgentCore sandboxed execution could still be used for DNS-based communication, and AWS documentation positioned VPC mode as the option for full network isolation. [10]
+- **Risk:** If sensitive information is processed in sandbox mode, there is a plausible path for data to leave the environment through DNS queries. [10]
+- **Recommendation:** It is recommended to assess whether sandbox mode is appropriate for workloads handling confidential or regulated data and whether stronger isolation is needed for those use cases. [10]
+- **Proposed Guardrail:** Use VPC mode for higher-sensitivity workloads and apply DNS egress monitoring or filtering controls, such as Route 53 Resolver DNS Firewall where appropriate. [10]
+
+### 3. Weak memory scoping across actor, session, or namespace boundaries
+
+- **Concern:** AgentCore Memory relies on actor, session, and namespace organization to separate memory context, so the review should consider whether those boundaries are aligned with the client’s user and tenancy model. [7][8]
+- **Risk:** If memory scoping is too broad, an application may retrieve context associated with a different user, workflow, or tenant than intended. [7][8]
+- **Recommendation:** It is recommended to review whether actor IDs, session IDs, and namespaces are uniquely and consistently applied, especially in multi-user or multi-tenant designs. [7][8]
+- **Proposed Guardrail:** Use distinct user- or tenant-aligned namespaces, keep memory writes scoped to validated actors and sessions, and apply IAM restrictions that align with the chosen memory boundaries. [7][8]
+
+### 4. Broad deployment permissions retained after setup
+
+- **Concern:** AgentCore setup and deployment workflows may require broader IAM permissions than are needed for steady-state runtime execution. [11]
+- **Risk:** If deployment identities or starter-toolkit permissions continue to be used in production, the environment may retain more privilege than necessary, increasing the impact of misuse or credential compromise. [11]
+- **Recommendation:** It is recommended to review whether deployment roles are separated from runtime roles and whether permissions have been reduced after provisioning is complete. [11]
+- **Proposed Guardrail:** Maintain separate provisioning and runtime identities, review attached policies after deployment, and limit runtime access to only the services and resources required for normal agent operation. [11]
+
+## Recommendation on format
+
+For your client document, I would keep:
+- **Concern**
+- **Risk**
+- **Recommendation**
+- **Proposed Guardrail**
+
+That matches your original draft better and sounds more like an architecture review than a formal audit register. [1] Also, “Proposed Guardrail” is useful here because AgentCore security often comes down to architecture controls rather than just patching a flaw. [3][4][5]
+
+I can now rewrite all four findings in a polished, copy-paste-ready format exactly matching your screenshot style.
+
+ 
+
 ### 3. Weak memory scoping across actor, session, or namespace boundaries
 
 - **Concern:** AgentCore Memory relies on actor, session, and namespace organization to separate memory context, so the review should consider whether those boundaries are aligned with the client’s user and tenancy model. [7][8]
